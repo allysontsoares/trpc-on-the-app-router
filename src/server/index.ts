@@ -1,41 +1,37 @@
-import { eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import { migrate } from "drizzle-orm/better-sqlite3/migrator";
-import Database from "better-sqlite3";
-import { z } from "zod";
+// import { eq } from "drizzle-orm";
+// import { drizzle } from "drizzle-orm/mysql2";
+// import { migrate } from "drizzle-orm/mysql2/migrator";
+// import { z } from "zod";
+// import mysql from "mysql2/promise";
 
-import { publicProcedure, router } from "./trpc";
+// import { publicProcedure, router } from "./trpc";
+// import { wlLabLaboratorios } from "@/db/schema";
 
-import { todos } from "@/db/schema";
 
-const sqlite = new Database("sqlite.db");
-const db = drizzle(sqlite);
+// const poolConnection = await mysql.createPool(
+//   process.env.DB_URL as string
+// );
+ 
+// const db = drizzle(poolConnection);
 
-migrate(db, { migrationsFolder: "drizzle" });
+// migrate(db, { migrationsFolder: "drizzle" });
 
-export const appRouter = router({
-  getTodos: publicProcedure.query(async () => {
-    return await db.select().from(todos).all();
-  }),
-  addTodo: publicProcedure.input(z.string()).mutation(async (opts) => {
-    await db.insert(todos).values({ content: opts.input, done: 0 }).run();
-    return true;
-  }),
-  setDone: publicProcedure
-    .input(
-      z.object({
-        id: z.number(),
-        done: z.number(),
-      })
-    )
-    .mutation(async (opts) => {
-      await db
-        .update(todos)
-        .set({ done: opts.input.done })
-        .where(eq(todos.id, opts.input.id))
-        .run();
-      return true;
-    }),
-});
+// export const appRouter = router({
+//   hello: publicProcedure
+//   .input(z.object({ text: z.string() }))
+//   .query(({ input }) => {
+//     return {
+//       greeting: `Hello ${input.text}`
+//     };
+//   }),
 
-export type AppRouter = typeof appRouter;
+// getExample: publicProcedure.query(({ ctx }) => {
+//   return "you can now see this message!";
+// }),
+
+//   getLaboratorios: publicProcedure.query(async () => {
+//     return await db.select().from(wlLabLaboratorios)
+//   })
+// });
+
+// export type AppRouter = typeof appRouter;
