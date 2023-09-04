@@ -20,7 +20,7 @@ export default function LaboratoriosList({
 }: {
     initialLabs: Awaited<ReturnType<(typeof serverClient)["getLaboratorios"]>>;
 }) {
-  const laboratorios = trpc.getLaboratorios.useQuery(undefined, {
+  const {data, isLoading, error} = trpc.getLaboratorios.useQuery(undefined, {
     initialData: initialLabs,
     refetchOnMount: true,
     refetchOnReconnect: true,
@@ -32,26 +32,23 @@ export default function LaboratoriosList({
   return (
     <div>
       <div>
-      {laboratorios.data ? laboratorios.data.map((lab) => (
-              <div className="text-sm" key={lab.labCod}><span>{lab.labFatNom}</span> - <span>{lab.labCod}</span></div>
-            )) : "Carregando laboratórios..."}
 
 <Table>
       <TableCaption>A list of your recent invoices.</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px]">Documento</TableHead>
-          <TableHead>Razão Social</TableHead>
-          <TableHead>Nome Fantasia</TableHead>
+          <TableHead className="w-[100px]">Identificação</TableHead>
           <TableHead className="text-right">Status</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {laboratorios.data ? laboratorios.data.map((lab) =>  (
+        {data ? data.map((lab) =>  (
           <TableRow key={lab.labCod}>
-            <TableCell className="font-medium">{lab.labDoc}</TableCell>
-            <TableCell>{lab.labFatNom}</TableCell>
-            <TableCell>{lab.labNom}</TableCell>
+            <TableCell className="font-medium">
+              <div className="flex gap-2"><span>Documento:</span> <span className="font-bold">{lab.labDoc}</span></div>
+              <div className="flex gap-2 w-max">{lab.labFatNom ? <><span>Razão social:</span><span className="font-bold">{lab.labFatNom}</span></> : ""}</div>
+              <div className="flex gap-2 w-max">{lab.labNom ? <><span>Nome fantasia:</span><span className="font-bold">{lab.labNom}</span></> : ""}</div>
+              </TableCell>
             <TableCell className="text-right">{(lab.labAtv = "S") ? <Badge variant="outline">Ativo</Badge> : <Badge variant="destructive">Inativo</Badge>}</TableCell>
           </TableRow>
         )) : "Carregando laboratórios..."}
